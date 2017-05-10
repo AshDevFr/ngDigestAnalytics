@@ -1,8 +1,8 @@
 {
-  "name": "ng-digest-analytic",
+  "name": "ng-digest-analytics",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/ngDigestAnalytic.js",
+  "main": "./dist/ngDigestAnalytics.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

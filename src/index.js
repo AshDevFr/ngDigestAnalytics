@@ -1,5 +1,6 @@
-import angular from 'angular';
-import digestAnalyticProvider from './digestAnalytic.provider';
+import digestAnalyticsProvider from './components/digestAnalytics.provider';
+import digestAnalyticsConfig from './components/digestAnalyticsConfig.constant';
 
-module.exports = angular.module('ng-digest-analytic', [])
- .provider('digestAnalytic', digestAnalyticProvider);
+module.exports = angular.module('ng-digest-analytics', [])
+ .provider('digestAnalytics', digestAnalyticsProvider)
+ .constant('digestAnalyticsConfig', digestAnalyticsConfig);

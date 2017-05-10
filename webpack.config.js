@@ -3,8 +3,8 @@ const webpack = require('webpack');
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: './dist/ngDigestAnalytic.js',
-    library: 'ng-digest-analytic',
+    filename: './dist/ngDigestAnalytics.js',
+    library: 'ng-digest-analytics',
     libraryTarget: 'commonjs2'
   },
   module: {
@@ -19,4 +19,4 @@ module.exports = {
   externals: {
     'angular': 'angular'
   }
-}
+};
