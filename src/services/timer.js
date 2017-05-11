@@ -10,10 +10,12 @@ Timer.prototype.init = function () {
   this.total = 0;
   this.cycleTotal = 0;
   this.cycleStart = null;
+  this.cycleCount = 0;
   this.subTotal = 0;
 };
 
 Timer.prototype.startCycle = function(start) {
+  this.cycleCount += 1;
   this.cycleStart = start;
   this.cycleTotal = 0;
   this.subTotal = 0;
@@ -33,7 +35,8 @@ Timer.prototype.endCycle = function() {
   const duration = Date.now() - this.cycleStart;
   this.overhead += duration - this.cycleTotal;
   this.cycleStart = null;
-  return this;
+  this.sum();
+  return duration;
 };
 
 Timer.prototype.sum = function() {
