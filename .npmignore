@@ -1,2 +1,7 @@
+.idea
+.idea/*
+.vscode
+.vscode/*
+.DS_Store
 .git
 node_modules
