@@ -21,7 +21,7 @@ Monitor.prototype.getParse = function () {
   if (!$parse) {
     const modules = [
       'ng',
-      ...digestAnalyticsConfig.getAdditionalDependencies()
+      ...digestAnalyticsConfig.additionalDependencies()
     ];
     $parse = angular.injector(modules).get('$parse');
   }
@@ -67,10 +67,9 @@ Monitor.prototype.wrapListener = function(listener, timing) {
 
 Monitor.prototype.createTiming = function(key) {
   let timing = this.watchTimings[key];
-  if (!timing) {
+  if (!timing)
     timing = this.watchTimings[key] = new Timer(key);
-    this.addTimer(timing);
-  }
+
   return timing;
 };
 
@@ -83,7 +82,7 @@ Monitor.prototype.formatExpression = function(watchExpression) {
 };
 
 Monitor.prototype.wrapExpression = function(expression, timing, counter, flushCycle, endCycle) {
-  self = this;
+  const self = this;
   if (!expression && !flushCycle) return expression;
   let actualExpression;
   if (typeof expression === 'string')
@@ -102,12 +101,21 @@ Monitor.prototype.wrapExpression = function(expression, timing, counter, flushCy
     if (!self.digestInProgress) return actualExpression.apply(this, arguments);
     const start = Date.now();
     timing.startCycle(start);
-    timingStack.push(timing);
+    self.addTimer(timing);
     try {
       return actualExpression.apply(this, arguments);
     } finally {
       timing.countTime(counter, Date.now() - start);
-      if (endCycle) timing.endCycle();
+      if (endCycle) {
+        const duration = timing.endCycle();
+        if (duration) {
+          self.removeTimer(timing);
+          if (self.hasStack())
+            self.lastTimer().subTotal += duration;
+          else
+            self.overheadTiming.overhead -= duration;
+        }
+      }
     }
   };
 };
@@ -128,15 +136,40 @@ Monitor.prototype.flushTimingCycle = function() {
 };
 
 Monitor.prototype.serializeData = function () {
+  let totalTime = 0;
   const top = Object.keys(this.watchTimings)
-    .map(k => this.watchTimings[k])
+    .map(k => {
+      totalTime += this.watchTimings[k].total;
+      return this.watchTimings[k]
+    })
     .filter(t => t.total)
     .sort((t1, t2) => {
       if (t1.total === t2.total)
         return 0;
       return t1.total < t2.total ? 1 : -1
-    });
-  console.log(top);
+    })
+    .slice(0, digestAnalyticsConfig.numTopWatches());
+
+  return {
+    top,
+    totalTime
+  };
+};
+
+Monitor.prototype.logData = function () {
+  const {top, totalTime} = this.serializeData();
+
+  console.log(`Total execution time: ${timeToStr(totalTime)}`);
+
+  top.forEach(t => {
+    const title = t.key.replace(/\s+/g, ' ').slice(0, 100);
+    const percentage = ((t.total / totalTime) * 100).toFixed(2);
+    console.log(`${percentage}% (${timeToStr(t.total)}) : ${title}`);
+  });
+
+  function timeToStr(t) {
+    return t > 1000 ? `${(t / 1000).toFixed(2)} s` : `${t} ms`
+  }
 };
 
 const instance = new Monitor();

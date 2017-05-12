@@ -1,4 +1,5 @@
-import $parser from '../decorators/parser';
+import $parse from '../decorators/parse';
+import $q from '../decorators/q';
 import $rootScope from '../decorators/rootScope';
 import logger from '../services/logger';
 import monitor from '../services/monitor';
@@ -7,7 +8,8 @@ function digestAnalyticsProvider($provide, digestAnalyticsConfig) {
   this.init = function (config) {
     digestAnalyticsConfig.init(config);
     logger.init();
-    // $provide.decorator('$parse', $parser);
+    $provide.decorator('$parse', $parse);
+    $provide.decorator('$q', $q);
     $provide.decorator('$rootScope', $rootScope);
 
     const originalBind = angular.bind;
@@ -24,6 +26,9 @@ function digestAnalyticsProvider($provide, digestAnalyticsConfig) {
       },
       analyse: function() {
         return logger.analyse();
+      },
+      getMonitor: function () {
+        return monitor;
       }
     };
   };

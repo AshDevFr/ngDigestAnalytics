@@ -82,8 +82,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
         try {
           const parsedWatchExpression = monitor.getParse()(watchExpression);
           watchExpression = parsedWatchExpression;
-        } catch(e) {
-        }
+        } catch(e) {}
       }
       if (watchExpression && watchExpression.$$watchDelegate) {
         return originalWatch.call(this, watchExpression, listener, objectEquality);

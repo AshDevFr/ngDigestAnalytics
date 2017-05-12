@@ -1,3 +1,5 @@
+import monitor from '../services/monitor';
+
 function $q($delegate, digestAnalyticsConfig) {
   const proto = Object.getPrototypeOf($delegate.defer().promise),
       originalThen = proto.then,
@@ -6,34 +8,34 @@ function $q($delegate, digestAnalyticsConfig) {
   proto.finally = instrumentedFinally;
 
   function instrumentedThen(onFulfilled, onRejected, progressBack) {
-    if (!digestAnalyticsConfig.isEnabled())
+    if (!digestAnalyticsConfig.isEnabled() || !digestAnalyticsConfig.watchPromises())
       return originalThen.call(this, onFulfilled, onRejected, progressBack);
 
     return originalThen.call(
       this,
-      wrapExpression(
-        onFulfilled, createTiming('$q(' + formatExpression(onFulfilled) + ')'), 'handle',
+      monitor.wrapExpression(
+        onFulfilled, monitor.createTiming('$q(' + monitor.formatExpression(onFulfilled) + ')'), 'handle',
         false, true),
-      wrapExpression(
-        onRejected, createTiming('$q(' + formatExpression(onRejected) + ')'), 'handle',
+      monitor.wrapExpression(
+        onRejected, monitor.createTiming('$q(' + monitor.formatExpression(onRejected) + ')'), 'handle',
         false, true),
-      wrapExpression(
-        progressBack, createTiming('$q(' + formatExpression(progressBack) + ')'), 'handle',
+      monitor.wrapExpression(
+        progressBack, monitor.createTiming('$q(' + monitor.formatExpression(progressBack) + ')'), 'handle',
         false, true)
     );
   }
 
   function instrumentedFinally(callback, progressBack) {
-    if (!digestAnalyticsConfig.isEnabled())
-      return originalThen.call(this, callback, progressBack);
+    if (!digestAnalyticsConfig.isEnabled() || !digestAnalyticsConfig.watchPromises())
+      return originalFinally.call(this, callback, progressBack);
 
     return originalFinally.call(
       this,
-      wrapExpression(
-        callback, createTiming('$q(' + formatExpression(callback) + ')'), 'handle',
+      monitor.wrapExpression(
+        callback, monitor.createTiming('$q(' + monitor.formatExpression(callback) + ')'), 'handle',
         false, true),
-      wrapExpression(
-        progressBack, createTiming('$q(' + formatExpression(callback) + ')'), 'handle',
+      monitor.wrapExpression(
+        progressBack, monitor.createTiming('$q(' + monitor.formatExpression(callback) + ')'), 'handle',
         false, true)
     );
   }

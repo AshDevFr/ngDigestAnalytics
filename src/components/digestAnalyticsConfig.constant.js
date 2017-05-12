@@ -1,27 +1,27 @@
 const defaultConfig = {
   enabled: true,
+  watchPromises: true,
   debug: false,
-  additionalDependencies: []
+  additionalDependencies: [],
+  numTopWatches: 10
 };
+
+let _config;
 
 const digestAnalyticsConfig = {
   init: function (config) {
-    this._config = Object.assign({}, defaultConfig, config);
+    _config = Object.assign({}, defaultConfig, config);
   },
   enable: function (enabled) {
-    this._config.enabled = enabled;
+    _config.enabled = enabled;
     console.log('digestAnalytics', _config.enabled);
-    return this._config.enabled;
+    return _config.enabled;
   },
-  isEnabled: function () {
-    return Boolean(this._config.enabled);
-  },
-  debugEnabled: function () {
-    return Boolean(this._config.debug);
-  },
-  getAdditionalDependencies: function () {
-    return this._config.additionalDependencies ? Array.from(this._config.additionalDependencies) : [];
-  }
+  isEnabled: () => Boolean(_config.enabled),
+  debugEnabled: () => Boolean(_config.debug),
+  additionalDependencies: () => _config.additionalDependencies ? Array.from(_config.additionalDependencies) : [],
+  numTopWatches: () => _config.numTopWatches,
+  watchPromises: () => _config.watchPromises
 };
 
 export default (function digestAnalyticsConfigConstant() {
