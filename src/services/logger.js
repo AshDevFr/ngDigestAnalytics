@@ -33,14 +33,14 @@ Logger.prototype.analyse = function() {
     if (!result[d.type]) {
       result[d.type] = {};
     }
-    count[d.type] = (count[d.type] || 0) + 1;
+    result[d.type].count = (result[d.type].count || 0) + 1;
     result[d.type].min = typeof result[d.type].min === 'undefined' ? d.value : Math.min(result[d.type].min, d.value);
     result[d.type].max = typeof result[d.type].max === 'undefined' ? d.value : Math.max(result[d.type].max, d.value);
     total[d.type] = (total[d.type] || 0) + d.value;
   });
 
   Object.keys(result).forEach(k => {
-    result[k].avg = total[k] / count[k];
+    result[k].avg = total[k] / result[k].count;
   });
 
   result._time = runningFor;

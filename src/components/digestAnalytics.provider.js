@@ -22,10 +22,17 @@ function digestAnalyticsProvider($provide, digestAnalyticsConfig) {
   this.$get = function() {
     return {
       getData: function() {
-        return logger.get();
+        return {
+          logs: logger.analyse(),
+          watches: monitor.serializeData()
+        }
       },
-      analyse: function() {
-        return logger.analyse();
+      resetData: function () {
+        logger.reset();
+        monitor.reset();
+      },
+      getLogger: function() {
+        return logger;
       },
       getMonitor: function () {
         return monitor;

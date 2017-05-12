@@ -17,6 +17,12 @@ function Monitor() {
   return Monitor.instance;
 }
 
+Monitor.prototype.reset = function () {
+  this.initStack();
+  this.watchTimings = {};
+  this.overheadTiming.init();
+};
+
 Monitor.prototype.getParse = function () {
   if (!$parse) {
     const modules = [
