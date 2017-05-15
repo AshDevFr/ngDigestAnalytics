@@ -71,10 +71,10 @@ Monitor.prototype.wrapListener = function(listener, timing) {
   };
 };
 
-Monitor.prototype.createTiming = function(key) {
+Monitor.prototype.createTiming = function(key, context) {
   let timing = this.watchTimings[key];
   if (!timing)
-    timing = this.watchTimings[key] = new Timer(key);
+    timing = this.watchTimings[key] = new Timer(key, context);
 
   return timing;
 };
@@ -83,7 +83,7 @@ Monitor.prototype.formatExpression = function(watchExpression) {
   if (!watchExpression) return '';
   if (typeof watchExpression === 'string') return watchExpression;
   if (typeof watchExpression.exp === 'string') return watchExpression.exp;
-  if (watchExpression.name) return 'function ' + watchExpression.name + '() {\u2026}';
+  if (watchExpression.name) return `function ${watchExpression.name}() {\u2026}`;
   return watchExpression.toString();
 };
 
@@ -168,7 +168,8 @@ Monitor.prototype.logData = function () {
   console.log(`Total execution time: ${timeToStr(totalTime)}`);
 
   top.forEach(t => {
-    const title = t.key.replace(/\s+/g, ' ').slice(0, 100);
+    const context = t.context.replace(/\s+/g, ' ').slice(0, 50);
+    const title = (context ? `${context} ` : '') + t.key.replace(/\s+/g, ' ').slice(0, 100);
     const percentage = ((t.total / totalTime) * 100).toFixed(2);
     console.log(`${percentage}% (${timeToStr(t.total)}) : ${title}`);
   });

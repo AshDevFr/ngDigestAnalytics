@@ -1,3 +1,4 @@
+import $controller from '../decorators/controller';
 import $parse from '../decorators/parse';
 import $q from '../decorators/q';
 import $rootScope from '../decorators/rootScope';
@@ -8,6 +9,7 @@ function digestAnalyticsProvider($provide, digestAnalyticsConfig) {
   this.init = function (config) {
     digestAnalyticsConfig.init(config);
     logger.init();
+    $provide.decorator('$controller', $controller);
     $provide.decorator('$parse', $parse);
     $provide.decorator('$q', $q);
     $provide.decorator('$rootScope', $rootScope);

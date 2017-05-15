@@ -43,7 +43,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalEvalAsync.call(this, expression, locals);
 
-    var timing = monitor.createTiming('$evalAsync(' + monitor.formatExpression(expression) + ')');
+    const timing = monitor.createTiming('$evalAsync(' + monitor.formatExpression(expression) + ')', this.$$name);
     originalEvalAsync.call(
       this, monitor.wrapExpression(expression, timing, 'handle', true, true), locals);
   }
@@ -52,7 +52,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalApplyAsync.call(this, expression);
 
-    var timing = monitor.createTiming('$applyAsync(' + monitor.formatExpression(expression) + ')');
+    var timing = monitor.createTiming('$applyAsync(' + monitor.formatExpression(expression) + ')', this.$$name);
     originalApplyAsync.call(this, monitor.wrapExpression(expression, timing, 'handle', false, true));
   }
 
@@ -71,10 +71,10 @@ function $rootScope($delegate, digestAnalyticsConfig) {
       return originalWatch.call(this, watchExpression, listener, objectEquality);
 
     // jshint validthis:true
-    var watchTimingSet = false;
+    let watchTimingSet = false;
     if (!watchTiming) {
       // Capture watch timing (and its key) once, before we descend in $$watchDelegates.
-      watchTiming = monitor.createTiming(monitor.formatExpression(watchExpression));
+      watchTiming = monitor.createTiming(monitor.formatExpression(watchExpression), this.$$name);
       watchTimingSet = true;
     }
     try {
@@ -101,12 +101,12 @@ function $rootScope($delegate, digestAnalyticsConfig) {
       return originalWatchGroup.call(this, watchExpressions, listener);
 
     // jshint validthis:true
-    var watchTimingSet = false;
+    let watchTimingSet = false;
     if (!watchTiming) {
       // $watchGroup delegates to $watch for each expression, so just make sure to set the group's
       // aggregate key as the override first.
       watchTiming = monitor.createTiming(
-        '[' + watchExpressions.map(monitor.formatExpression).join(', ') + ']');
+        '[' + watchExpressions.map(e => monitor.formatExpression(e)).join(', ') + ']', this.$$name);
       watchTimingSet = true;
     }
     try {
