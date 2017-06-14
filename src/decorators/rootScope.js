@@ -60,10 +60,8 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalPostDigest.call(this, fn);
 
-    if (monitor.hasStack()) {
-      fn = monitor.wrapExpression(fn, monitor.lastTimer(), 'overhead', true, true);
-    }
-    originalPostDigest.call(this, fn);
+    const timing = monitor.createTiming('$$postDigest(' + monitor.formatExpression(expression) + ')', this.$$name);
+    originalPostDigest.call(this, monitor.wrapExpression(fn, timing, 'handle', true, true));
   }
 
   function instrumentedWatch(watchExpression, listener, objectEquality) {
