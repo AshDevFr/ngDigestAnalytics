@@ -56,12 +56,12 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     originalApplyAsync.call(this, monitor.wrapExpression(expression, timing, 'handle', false, true));
   }
 
-  function instrumentedPostDigest(fn) {
+  function instrumentedPostDigest(expression) {
     if (!digestAnalyticsConfig.isEnabled())
-      return originalPostDigest.call(this, fn);
+      return originalPostDigest.call(this, expression);
 
     const timing = monitor.createTiming('$$postDigest(' + monitor.formatExpression(expression) + ')', this.$$name);
-    originalPostDigest.call(this, monitor.wrapExpression(fn, timing, 'handle', true, true));
+    originalPostDigest.call(this, monitor.wrapExpression(expression, timing, 'handle', true, true));
   }
 
   function instrumentedWatch(watchExpression, listener, objectEquality) {
