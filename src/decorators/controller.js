@@ -11,8 +11,8 @@ function $controller($delegate) {
 
     if (typeof name === 'string')
       locals.$scope.$$context = {
-        name: name || locals.$scope.$$context ? locals.$scope.$$context.name || '' : '',
-        element: element || locals.$scope.$$context ? locals.$scope.$$context.element || '' : '',
+        name: name || (locals.$scope.$$context ? (locals.$scope.$$context.name || '') : ''),
+        element: element || (locals.$scope.$$context ? (locals.$scope.$$context.element || '') : ''),
       };
 
     return $delegate.apply(this, arguments);
