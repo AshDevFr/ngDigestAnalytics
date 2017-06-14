@@ -1,18 +1,19 @@
 function $controller($delegate) {
   return function (expression, locals, later, ident) {
+    const element = `${filterElements(locals.$element[0].tagName)}${filterAttrs(Object.keys(locals.$attrs.$attr))}`;
     let name = expression;
     if (name instanceof Array)
       name = name[name.length - 1];
 
     if (typeof name === 'function') {
       name = name.name;
-      if (name === 'controller') {
-        name = `${filterElements(locals.$element[0].tagName)}${filterAttrs(Object.keys(locals.$attrs.$attr))}`;
-      }
     }
 
     if (typeof name === 'string')
-      locals.$scope.$$name = name || locals.$scope.$$name;
+      locals.$scope.$$context = {
+        name: name || locals.$scope.$$context ? locals.$scope.$$context.name || '' : '',
+        element: element || locals.$scope.$$context ? locals.$scope.$$context.element || '' : '',
+      };
 
     return $delegate.apply(this, arguments);
   };
