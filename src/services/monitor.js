@@ -168,10 +168,13 @@ Monitor.prototype.logData = function () {
   console.log(`Total execution time: ${timeToStr(totalTime)}`);
 
   top.forEach(t => {
-    const context = t.context.replace(/\s+/g, ' ').slice(0, 50);
-    const title = (context ? `${context} ` : '') + t.key.replace(/\s+/g, ' ').slice(0, 100);
+    const title = t.key.replace(/\s+/g, ' ').slice(0, 100);
     const percentage = ((t.total / totalTime) * 100).toFixed(2);
     console.log(`${percentage}% (${timeToStr(t.total)}) : ${title}`);
+    if (t.context && t.context.name)
+      console.log(`\t Scope: ${t.context.name}`);
+    if (t.context && t.context.element)
+      console.log(`\t Element: ${t.context.element}`);
   });
 
   function timeToStr(t) {

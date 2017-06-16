@@ -1,6 +1,6 @@
 {
   "name": "ng-digest-analytics",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "./dist/ngDigestAnalytics.js",
   "scripts": {

@@ -1,6 +1,6 @@
 function Timer(key, context) {
   this.key = key;
-  this.context = context || '';
+  this.context = context || {};
   this.init();
 }
 

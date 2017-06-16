@@ -10,9 +10,9 @@ function $controller($delegate) {
     }
 
     if (typeof name === 'string')
-      locals.$scope.$$context = {
-        name: name || (locals.$scope.$$context ? (locals.$scope.$$context.name || '') : ''),
-        element: element || (locals.$scope.$$context ? (locals.$scope.$$context.element || '') : ''),
+      locals.$scope.$$da_context = {
+        name: name || (locals.$scope.$$da_context ? (locals.$scope.$$da_context.name || '') : ''),
+        element: element || (locals.$scope.$$da_context ? (locals.$scope.$$da_context.element || '') : ''),
       };
 
     return $delegate.apply(this, arguments);

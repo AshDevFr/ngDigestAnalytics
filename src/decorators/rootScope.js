@@ -43,7 +43,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalEvalAsync.call(this, expression, locals);
 
-    const timing = monitor.createTiming('$evalAsync(' + monitor.formatExpression(expression) + ')', this.$$name);
+    const timing = monitor.createTiming('$evalAsync(' + monitor.formatExpression(expression) + ')', this.$$da_context);
     originalEvalAsync.call(
       this, monitor.wrapExpression(expression, timing, 'handle', true, true), locals);
   }
@@ -52,7 +52,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalApplyAsync.call(this, expression);
 
-    var timing = monitor.createTiming('$applyAsync(' + monitor.formatExpression(expression) + ')', this.$$name);
+    var timing = monitor.createTiming('$applyAsync(' + monitor.formatExpression(expression) + ')', this.$$da_context);
     originalApplyAsync.call(this, monitor.wrapExpression(expression, timing, 'handle', false, true));
   }
 
@@ -60,7 +60,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     if (!digestAnalyticsConfig.isEnabled())
       return originalPostDigest.call(this, expression);
 
-    const timing = monitor.createTiming('$$postDigest(' + monitor.formatExpression(expression) + ')', this.$$name);
+    const timing = monitor.createTiming('$$postDigest(' + monitor.formatExpression(expression) + ')', this.$$da_context);
     originalPostDigest.call(this, monitor.wrapExpression(expression, timing, 'handle', true, true));
   }
 
@@ -72,7 +72,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
     let watchTimingSet = false;
     if (!watchTiming) {
       // Capture watch timing (and its key) once, before we descend in $$watchDelegates.
-      watchTiming = monitor.createTiming(monitor.formatExpression(watchExpression), this.$$name);
+      watchTiming = monitor.createTiming(monitor.formatExpression(watchExpression), this.$$da_context);
       watchTimingSet = true;
     }
     try {
@@ -104,7 +104,7 @@ function $rootScope($delegate, digestAnalyticsConfig) {
       // $watchGroup delegates to $watch for each expression, so just make sure to set the group's
       // aggregate key as the override first.
       watchTiming = monitor.createTiming(
-        '[' + watchExpressions.map(e => monitor.formatExpression(e)).join(', ') + ']', this.$$name);
+        '[' + watchExpressions.map(e => monitor.formatExpression(e)).join(', ') + ']', this.$$da_context);
       watchTimingSet = true;
     }
     try {
