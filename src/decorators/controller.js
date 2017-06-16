@@ -1,5 +1,8 @@
 function $controller($delegate) {
   return function (expression, locals, later, ident) {
+    if (!locals || !locals.$scope)
+      return $delegate.apply(this, arguments);
+
     const attrs = (locals.$attrs && locals.$attrs.$attr) ? filterAttrs(Object.keys(locals.$attrs.$attr)) : '';
     const elements = (locals.$element && locals.$element[0] && locals.$element[0].tagName) ? filterElements(locals.$element[0].tagName) : '';
     const element = `${elements}${attrs}`;
