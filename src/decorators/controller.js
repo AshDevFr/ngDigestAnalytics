@@ -1,6 +1,8 @@
 function $controller($delegate) {
   return function (expression, locals, later, ident) {
-    const element = `${filterElements(locals.$element[0].tagName)}${filterAttrs(Object.keys(locals.$attrs.$attr))}`;
+    const attrs = (locals.$attrs && locals.$attrs.$attr) ? filterAttrs(Object.keys(locals.$attrs.$attr)) : '';
+    const elements = (locals.$element && locals.$element[0] && locals.$element[0].tagName) ? filterElements(locals.$element[0].tagName) : '';
+    const element = `${elements}${attrs}`;
     let name = expression;
     if (name instanceof Array)
       name = name[name.length - 1];
